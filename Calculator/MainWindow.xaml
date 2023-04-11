@@ -60,7 +60,7 @@
         </Grid.RowDefinitions>
 
         <TextBox   Name="Entry"            Grid.Row="1"      Grid.ColumnSpan="9" Grid.RowSpan="2"
-                   TextAlignment="Right"   FontSize="32" BorderThickness="2"  BorderBrush="#CCCCCC">
+                   TextAlignment="Right"   FontSize="32" BorderThickness="2"  BorderBrush="#CCCCCC" PreviewTextInput="NumberValidationTextBox">
             <TextBox.Text >
                 <Binding Path="CurrentValue" Mode="TwoWay"    UpdateSourceTrigger="PropertyChanged">
                 </Binding>
