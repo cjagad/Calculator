@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Input;
@@ -53,10 +52,18 @@ namespace Calculator
 		/// <param name="e">The event data.<see cref="RoutedEventArgs"/></param>
         private void EditDeleteLast_Click(object sender, RoutedEventArgs e)
         {
-            Entry.Text = Entry.Text.Substring(0, Entry.Text.Length - 1);
+            try
+            {
 
-            if (String.IsNullOrEmpty(Entry.Text))
-                Entry.Text = "0";
+                Entry.Text = Entry.Text.Substring(0, Entry.Text.Length - 1);
+
+                if (String.IsNullOrEmpty(Entry.Text))
+                    Entry.Text = "0";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         /// <summary>Process the "EditClearAll" button click event.</summary>
@@ -64,10 +71,17 @@ namespace Calculator
         /// <param name="e">The event data.<see cref="RoutedEventArgs"/></param>
         private void EditClearAll_Click(object sender, RoutedEventArgs e)
         {
-            _operator = SecondArgumentAction.None;
-            Entry.Text = "0";
-            Info.Text = "";
-            _value = "";
+            try
+            {
+                _operator = SecondArgumentAction.None;
+                Entry.Text = "0";
+                Info.Text = "";
+                _value = "";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
 
@@ -81,16 +95,23 @@ namespace Calculator
         /// <param name="o">A parameter to use for any purpose.</param>
         public void NumberZero_Action(object o)
         {
-            if (_operator == SecondArgumentAction.Clear)
+            try
             {
-                Entry.Text = "0";
-                _operator = SecondArgumentAction.None;
-            }
+                if (_operator == SecondArgumentAction.Clear)
+                {
+                    Entry.Text = "0";
+                    _operator = SecondArgumentAction.None;
+                }
 
-            if (Entry.Text == "0")
-                Entry.Text = "0";
-            else
-                Entry.Text += "0";
+                if (Entry.Text == "0")
+                    Entry.Text = "0";
+                else
+                    Entry.Text += "0";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         /// <summary>Process the "NumberOne" button click event.</summary>
@@ -103,16 +124,23 @@ namespace Calculator
         /// <param name="o">A parameter to use for any purpose.</param>
         public void NumberOne_Action(object o)
         {
-            if (_operator == SecondArgumentAction.Clear)
+            try
             {
-                Entry.Text = "0";
-                _operator = SecondArgumentAction.None;
-            }
+                if (_operator == SecondArgumentAction.Clear)
+                {
+                    Entry.Text = "0";
+                    _operator = SecondArgumentAction.None;
+                }
 
-            if (Entry.Text == "0")
-                Entry.Text = "1";
-            else
-                Entry.Text += "1";
+                if (Entry.Text == "0")
+                    Entry.Text = "1";
+                else
+                    Entry.Text += "1";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
 
@@ -126,15 +154,22 @@ namespace Calculator
         /// <param name="o">A parameter to use for any purpose.</param>
         public void CalculateSubtract_Action(object o)
         {
-            if (_operator != SecondArgumentAction.Clear &&
+            try
+            {
+                if (_operator != SecondArgumentAction.Clear &&
                 _operator != SecondArgumentAction.None)
-                CalculateResult_Action(o);
+                    CalculateResult_Action(o);
 
-            _operator = SecondArgumentAction.Substract;
-            _value = Entry.Text;
-            Entry.Text = "";
+                _operator = SecondArgumentAction.Substract;
+                _value = Entry.Text;
+                Entry.Text = "";
 
-            Info.Text = _value.ToString() + " -";
+                Info.Text = _value.ToString() + " -";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         /// <summary>Process the "CalculateAdd" button click event.</summary>
@@ -147,15 +182,22 @@ namespace Calculator
         /// <param name="o">A parameter to use for any purpose.</param>
         public void CalculateAdd_Action(object o)
         {
-            if (_operator != SecondArgumentAction.Clear &&
+            try
+            {
+                if (_operator != SecondArgumentAction.Clear &&
                 _operator != SecondArgumentAction.None)
-                CalculateResult_Action(o);
+                    CalculateResult_Action(o);
 
-            _operator = SecondArgumentAction.Add;
-            _value = Entry.Text;
-            Entry.Text = "";
+                _operator = SecondArgumentAction.Add;
+                _value = Entry.Text;
+                Entry.Text = "";
 
-            Info.Text = _value.ToString() + " +";
+                Info.Text = _value.ToString() + " +";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         /// <summary>Process the "CalculateResult" button click event.</summary>
@@ -168,34 +210,94 @@ namespace Calculator
         /// <param name="o">A parameter to use for any purpose.</param>
         public void CalculateResult_Action(object o)
         {
-            if (!string.IsNullOrEmpty(_value) && !string.IsNullOrEmpty(Entry.Text))
+            try
             {
-                int result = 0;
-                string dTemp = Convert.ToString(Convert.ToInt32(Entry.Text, 2));
-                _value = Convert.ToString(Convert.ToInt32(_value, 2));
-                switch (_operator)
+                if (!string.IsNullOrEmpty(_value) && !string.IsNullOrEmpty(Entry.Text))
                 {
-                    case SecondArgumentAction.Add:
-                        result = Convert.ToInt32(_value) + Convert.ToInt32(dTemp);
-                        _operator = SecondArgumentAction.Clear;
-                        break;
-                    case SecondArgumentAction.Substract:
-                        result = Convert.ToInt32(_value) - Convert.ToInt32(dTemp);
-                        _operator = SecondArgumentAction.Clear;
-                        break;
-                }
+                    string firstNumber = _value;
+                    string secondNumber = Entry.Text;
 
-                Entry.Text = Convert.ToString(result, 2);
-                if (_operator == SecondArgumentAction.Clear)
-                    Info.Text = "";
+                    switch (_operator)
+                    {
+                        case SecondArgumentAction.Add:
+                            Entry.Text = binaryNumberAddition(firstNumber, secondNumber);
+                            _operator = SecondArgumentAction.Clear;
+                            break;
+                        case SecondArgumentAction.Substract:
+                            Entry.Text = binaryNumberSubstraction(firstNumber, secondNumber);
+                            _operator = SecondArgumentAction.Clear;
+                            break;
+                    }
+
+                    if (_operator == SecondArgumentAction.Clear)
+                        Info.Text = "";
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
         }
 
+        /// <summary>
+        /// Validate input and allowed 1 & 0 only
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void NumberValidationTextBox(object sender, TextCompositionEventArgs e)
         {
             Regex regex = new Regex("[^0-1]+");
             e.Handled = regex.IsMatch(e.Text);
         }
 
+
+        static string binaryNumberAddition(string firstNumber, string secondNumber)
+        {
+            int maxLength = Math.Max(firstNumber.Length, secondNumber.Length);
+            firstNumber = firstNumber.PadLeft(maxLength, '0');
+            secondNumber = secondNumber.PadLeft(maxLength, '0');
+            string result = "";
+            int carry = 0;
+            for (int i = maxLength - 1; i >= 0; i--)
+            {
+                int bit1 = firstNumber[i] - '0';
+                int bit2 = secondNumber[i] - '0';
+                int sum = bit1 + bit2 + carry;
+                carry = sum / 2;
+                result = (sum % 2).ToString() + result;
+            }
+            if (carry == 1)
+            {
+                result = "1" + result;
+            }
+            return result;
+        }
+
+        static string binaryNumberSubstraction(string binary1, string binary2)
+        {
+            int maxLength = Math.Max(binary1.Length, binary2.Length);
+            binary1 = binary1.PadLeft(maxLength, '0');
+            binary2 = binary2.PadLeft(maxLength, '0');
+            string result = "";
+            int borrow = 0;
+            for (int i = maxLength - 1; i >= 0; i--)
+            {
+                int bit1 = binary1[i] - '0';
+                int bit2 = binary2[i] - '0';
+                int diff = bit1 - bit2 - borrow;
+                if (diff < 0)
+                {
+                    diff += 2;
+                    borrow = 1;
+                }
+                else
+                {
+                    borrow = 0;
+                }
+                result = diff.ToString() + result;
+            }
+            return result.TrimStart('0');
+        }
     }
+
 }
