@@ -221,16 +221,12 @@ namespace Calculator
                     {
                         case SecondArgumentAction.Add:
                             Entry.Text = binaryNumberAddition(firstNumber, secondNumber);
-                            _operator = SecondArgumentAction.Clear;
                             break;
                         case SecondArgumentAction.Substract:
                             Entry.Text = binaryNumberSubstraction(firstNumber, secondNumber);
-                            _operator = SecondArgumentAction.Clear;
                             break;
                     }
-
-                    if (_operator == SecondArgumentAction.Clear)
-                        Info.Text = "";
+                    _value = secondNumber;
                 }
             }
             catch (Exception ex)
